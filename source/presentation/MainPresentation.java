@@ -1,10 +1,12 @@
 package presentation;
 
-import abstraction.immutable.Sensor;
 import controller.MainController;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
@@ -17,14 +19,16 @@ public class MainPresentation extends BorderPane
         {
             new CreationDialog(controller);
         });
+        create.setDefaultButton(true);
         
-        TableView<TableRowEntry> table = new TableView<TableRowEntry>();
+        TableView<TableRowEntry> table = new TableView<>();
         
         TableColumn<TableRowEntry, Boolean> columnEnabled = new TableColumn<>("Enabled");
         columnEnabled.setCellValueFactory(cellData -> cellData.getValue().enabledProperty());
+        columnEnabled.setCellFactory(CheckBoxTableCell.forTableColumn(columnEnabled));
         columnEnabled.setPrefWidth(60);
         
-        TableColumn<TableRowEntry, Sensor> columnSensor = new TableColumn<>("Sensor");
+        TableColumn<TableRowEntry, String> columnSensor = new TableColumn<>("Sensor");
         columnSensor.setCellValueFactory(cellData -> cellData.getValue().sensorProperty());
         columnSensor.setPrefWidth(125);
         
@@ -42,8 +46,21 @@ public class MainPresentation extends BorderPane
         table.getColumns().add(columnCount);
         table.setItems(controller.getModel().getTableItems());
         
+        ContextMenu menu = new ContextMenu();
+        {
+            MenuItem menuRemove = new MenuItem("Remove");
+            menuRemove.setOnAction(e -> controller.removeGenerator(table.getSelectionModel().getSelectedItem().getGeneratorId()));
+            
+            menu.getItems().add(menuRemove);
+        }
+        table.setContextMenu(menu);
+        table.setEditable(true);
+        
         VBox vbox = new VBox();
         vbox.getChildren().addAll(create, table);
+        
+        // TODO change enabled column to checkboxes
+        // TODO add callbacks for enabled 
         
         // TODO add output destination information
 

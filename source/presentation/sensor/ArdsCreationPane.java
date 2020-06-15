@@ -1,12 +1,12 @@
 package presentation.sensor;
 
-import abstraction.immutable.SensorGenerator;
+import controller.MainController;
 import javafx.scene.control.TextField;
 import mil.af.eglin.ccf.rt.fx.layout.VBox;
 
 public class ArdsCreationPane extends SensorCreationPane
 {
-    public ArdsCreationPane()
+    public ArdsCreationPane(MainController controller)
     {
         VBox vbox = new VBox();
         
@@ -29,10 +29,9 @@ public class ArdsCreationPane extends SensorCreationPane
     }
 
     @Override
-    SensorGenerator add()
+    void add()
     {
         // TODO Auto-generated method stub
-        return null;
     }
 
 }

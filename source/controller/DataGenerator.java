@@ -2,7 +2,6 @@ package controller;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import presentation.MainPresentation;
 
 public class DataGenerator extends Application
 {
@@ -27,7 +26,7 @@ public class DataGenerator extends Application
 
         stage.setTitle("Data Generator");
 
-        Scene scene = new Scene(new MainPresentation(controller));
+        Scene scene = new Scene(controller.getPresentation());
         this.stage.setScene(scene);
         this.stage.show();
     }

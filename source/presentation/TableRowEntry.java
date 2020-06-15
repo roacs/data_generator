@@ -1,22 +1,36 @@
 package presentation;
 
-import abstraction.immutable.Sensor;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.LongProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class TableRowEntry
 {
-    private BooleanProperty        enabledProperty     = new SimpleBooleanProperty();
-    private ObjectProperty<Sensor> sensorProperty      = new SimpleObjectProperty<>();
-    private StringProperty         descriptionProperty = new SimpleStringProperty();
-    private LongProperty           countProperty       = new SimpleLongProperty();
+    private final int       generatorId;
 
+    private BooleanProperty enabledProperty     = new SimpleBooleanProperty();
+    private StringProperty  sensorProperty      = new SimpleStringProperty();
+    private StringProperty  descriptionProperty = new SimpleStringProperty();
+    private LongProperty    countProperty       = new SimpleLongProperty();
+
+    public TableRowEntry(int uniqueId, String sensor, String description)
+    {
+        this.generatorId = uniqueId;
+        
+        this.enabledProperty.set(true);
+        this.sensorProperty.set(sensor);
+        this.descriptionProperty.set(description);
+        this.countProperty.set(0);
+    }
+    
+    public int getGeneratorId()
+    {
+        return generatorId;
+    }
+    
     public BooleanProperty enabledProperty()
     {
         return enabledProperty;
@@ -32,17 +46,17 @@ public class TableRowEntry
         return enabledProperty.get();
     }
 
-    public ObjectProperty<Sensor> sensorProperty()
+    public StringProperty sensorProperty()
     {
         return sensorProperty;
     }
 
-    public void setSensor(Sensor enabled)
+    public void setSensor(String enabled)
     {
         sensorProperty.setValue(enabled);
     }
 
-    public Sensor getSensor()
+    public String getSensor()
     {
         return sensorProperty.get();
     }

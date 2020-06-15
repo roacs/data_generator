@@ -1,5 +1,6 @@
 package presentation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,32 +11,45 @@ import controller.MainController;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import presentation.sensor.ArdsCreationPane;
-import presentation.sensor.FPS16CreationPane;
-import presentation.sensor.P5CreationPane;
 import presentation.sensor.SensorCreationPane;
+import presentation.sensor.SensorCreationPaneMap;
 
 public class CreationDialog extends Stage
 {
-    private static final Map<Sensor, SensorCreationPane> sensorToPane;
-    static
-    {
-        Map<Sensor, SensorCreationPane> map = new HashMap<>();
-        map.put(Sensor.ARDS, new ArdsCreationPane());
-        map.put(Sensor.FPS16, new FPS16CreationPane());
-        map.put(Sensor.P5, new P5CreationPane());
-        
-        sensorToPane = Collections.unmodifiableMap(map);
-    }
+    private final Map<Sensor, SensorCreationPane> sensorToPane;
 
     public CreationDialog(MainController controller)
     {
+        Map<Sensor, SensorCreationPane> map = new HashMap<>();
+        for (Sensor s : SensorCreationPaneMap.get().keySet())
+        {
+            try
+            {
+                map.put(s, (SensorCreationPane)SensorCreationPaneMap.get().get(s).getConstructor(MainController.class).newInstance(controller));
+            }
+            catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e1)
+            {
+                throw new RuntimeException("Unable to construct SensorCreationPane for " + s);
+            }
+        }
+        sensorToPane = Collections.unmodifiableMap(map);
+        
         initModality(Modality.APPLICATION_MODAL);
         setTitle("Sensor Data Creation");
+        
+        addEventHandler(KeyEvent.KEY_RELEASED, e ->
+        {
+            if (KeyCode.ESCAPE == e.getCode())
+            {
+                this.close();
+            }
+        });
         
         StackPane stackPane = new StackPane();
         for (Sensor key : sensorToPane.keySet())
@@ -44,9 +58,9 @@ public class CreationDialog extends Stage
         }
 
         ListView<Sensor> listView = new ListView<Sensor>(controller.getModel().getSensorListItems());
-        listView.setOnMousePressed((e) ->
+        listView.getSelectionModel().selectedItemProperty().addListener((obs, o, n) ->
         {
-            showNode(stackPane.getChildren(), sensorToPane.get(listView.getSelectionModel().getSelectedItem()));
+            showNode(stackPane.getChildren(), sensorToPane.get(n));
         });
         
         BorderPane main = new BorderPane();

@@ -1,20 +1,30 @@
 package presentation.sensor;
 
-import abstraction.immutable.SensorGenerator;
+import abstraction.immutable.FPS16SensorGenerator;
+import controller.MainController;
 import javafx.scene.control.TextField;
 import mil.af.eglin.ccf.rt.fx.layout.VBox;
 
 public class FPS16CreationPane extends SensorCreationPane
 {
-    public FPS16CreationPane()
+    private final MainController controller;
+    
+    private final TextField textMissionNumber = new TextField();
+    private final TextField textJobOrderNumber = new TextField();
+    
+    public FPS16CreationPane(MainController controller)
     {
+        this.controller = controller;
+        
         VBox vbox = new VBox();
         
-        TextField textMissionNumber = new TextField("9999");
         textMissionNumber.setPromptText("Mission Number");
-        
-        TextField textJobOrderNumber = new TextField("99999999");
         textJobOrderNumber.setPromptText("JON");
+        
+        textMissionNumber.setText("9999");
+        textJobOrderNumber.setText("99999999");
+        
+        // TODO add a TSPI Configurator
         
         vbox.getChildren().addAll(textMissionNumber, textJobOrderNumber);
         
@@ -24,14 +34,18 @@ public class FPS16CreationPane extends SensorCreationPane
     @Override
     void clear()
     {
-        // TODO Auto-generated method stub
-        
+        textMissionNumber.clear();
+        textJobOrderNumber.clear();
     }
 
     @Override
-    SensorGenerator add()
+    void add()
     {
-        // TODO read the input from the pane and create a SensorGenerator
-        return null;
+        // TODO read the input from the pane - create a generator and call controller to add it
+        String missionNumber = textMissionNumber.getText();
+        String jobOrderNumber = textJobOrderNumber.getText();
+        
+        FPS16SensorGenerator generator = new FPS16SensorGenerator(missionNumber, jobOrderNumber);
+        controller.addGenerator(generator);
     }
 }

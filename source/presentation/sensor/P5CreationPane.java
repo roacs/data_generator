@@ -1,9 +1,14 @@
 package presentation.sensor;
 
-import abstraction.immutable.SensorGenerator;
+import controller.MainController;
 
 public class P5CreationPane extends SensorCreationPane
 {
+
+    public P5CreationPane(MainController controller)
+    {
+        // TODO Auto-generated constructor stub
+    }
 
     @Override
     void clear()
@@ -13,10 +18,9 @@ public class P5CreationPane extends SensorCreationPane
     }
 
     @Override
-    SensorGenerator add()
+    void add()
     {
         // TODO Auto-generated method stub
-        return null;
     }
 
 }
