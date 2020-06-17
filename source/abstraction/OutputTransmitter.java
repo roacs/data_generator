@@ -17,17 +17,17 @@ public class OutputTransmitter
         // TODO processing thread
         // TODO need output address, format as TspiNode, RawChannel or Mission channel?
         // TODO rate selection by sensorgenerator?
+        // TODO properly shut down the executor
         
-        Executors.newSingleThreadScheduledExecutor().schedule(() ->
+        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() ->
         {
             synchronized (database.getSensorGeneratorMap())
             {
                 for (Integer id : database.getSensorGeneratorMap().keySet())
                 {
-                    SensorGeneratorInformation info = database.getSensorGeneratorMap().get(id);
-                    info.setCount(info.getCount() + 1);
+                    database.getSensorGeneratorMap().get(id).incrementCount();
                 }
             }
-        }, 1000, TimeUnit.MILLISECONDS); 
+        }, 0, 500, TimeUnit.MILLISECONDS); 
     }
 }

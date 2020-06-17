@@ -1,8 +1,5 @@
 package controller;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import abstraction.Database;
 import abstraction.OutputTransmitter;
 import abstraction.SensorGeneratorInformation;
@@ -33,25 +30,15 @@ public class MainController
             if (c.wasAdded())
             {
                 model.addGenerator(c.getKey(), c.getValueAdded().getSensorGenerator());
+                c.getValueAdded().countProperty().addListener((obs, o, n) -> model.setGeneratorCount(c.getKey(), n.longValue()));
             }
             else if (c.wasRemoved())
             {
                 model.removeGenerator(c.getKey());
+                // TODO remove listener?
             }
         }));
 
-        Executors.newSingleThreadScheduledExecutor().schedule(() ->
-        {
-            synchronized (database.getSensorGeneratorMap())
-            {
-                for (Integer id : database.getSensorGeneratorMap().keySet())
-                {
-                    model.setGeneratorCount(id, database.getSensorGeneratorMap().get(id).getCount());
-                }
-            }
-        }, 500, TimeUnit.MILLISECONDS); 
-
-        
         transmitter.start();
     }
 
