@@ -1,7 +1,11 @@
 package controller;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import abstraction.Database;
 import abstraction.OutputTransmitter;
+import abstraction.SensorGeneratorInformation;
 import abstraction.immutable.Sensor;
 import abstraction.immutable.SensorGenerator;
 import javafx.collections.FXCollections;
@@ -15,37 +19,47 @@ public class MainController
     private final MainPresentation  presentation;
 
     private final Database          database    = new Database();
-    private final OutputTransmitter transmitter = new OutputTransmitter();
+    private final OutputTransmitter transmitter = new OutputTransmitter(database);
 
     public MainController()
     {
         model = new MainModel();
         presentation = new MainPresentation(this);
-        
+
         model.setSensorListItems(FXCollections.observableArrayList(Sensor.values()));
-        
-        database.getSensorGeneratorMap().addListener((MapChangeListener<Integer, SensorGenerator>)(c ->
+
+        database.getSensorGeneratorMap().addListener((MapChangeListener<Integer, SensorGeneratorInformation>) (c ->
         {
             if (c.wasAdded())
             {
-                model.addGenerator(c.getKey(), c.getValueAdded());
+                model.addGenerator(c.getKey(), c.getValueAdded().getSensorGenerator());
             }
             else if (c.wasRemoved())
             {
                 model.removeGenerator(c.getKey());
             }
         }));
-        
-        // TODO need to propagate a checkbox enabled change to the database
 
-        // TODO create a thread to periodically poll the transmitters and update statistics in the model
+        Executors.newSingleThreadScheduledExecutor().schedule(() ->
+        {
+            synchronized (database.getSensorGeneratorMap())
+            {
+                for (Integer id : database.getSensorGeneratorMap().keySet())
+                {
+                    model.setGeneratorCount(id, database.getSensorGeneratorMap().get(id).getCount());
+                }
+            }
+        }, 500, TimeUnit.MILLISECONDS); 
+
+        
+        transmitter.start();
     }
 
     public MainModel getModel()
     {
         return model;
     }
-    
+
     public MainPresentation getPresentation()
     {
         return presentation;
@@ -55,9 +69,14 @@ public class MainController
     {
         database.addGenerator(generator);
     }
-    
+
     public void removeGenerator(int generatorId)
     {
         database.removeGenerator(generatorId);
+    }
+
+    public void setEnabled(int generatorId, boolean enabled)
+    {
+        database.setEnabled(generatorId, enabled);
     }
 }

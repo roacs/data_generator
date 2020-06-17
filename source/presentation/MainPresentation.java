@@ -1,6 +1,7 @@
 package presentation;
 
 import controller.MainController;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -9,6 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 public class MainPresentation extends BorderPane
 {
@@ -25,7 +27,16 @@ public class MainPresentation extends BorderPane
         
         TableColumn<TableRowEntry, Boolean> columnEnabled = new TableColumn<>("Enabled");
         columnEnabled.setCellValueFactory(cellData -> cellData.getValue().enabledProperty());
-        columnEnabled.setCellFactory(CheckBoxTableCell.forTableColumn(columnEnabled));
+        columnEnabled.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>()
+        {
+            @Override
+            public ObservableValue<Boolean> call(Integer index)
+            {
+                TableRowEntry entry = table.getItems().get(index);
+                controller.setEnabled(entry.getGeneratorId(), entry.isEnabled());
+                return entry.enabledProperty();
+            }
+        }));
         columnEnabled.setPrefWidth(60);
         
         TableColumn<TableRowEntry, String> columnSensor = new TableColumn<>("Sensor");

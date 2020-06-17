@@ -7,8 +7,8 @@ import javafx.collections.ObservableList;
 
 public class MainModel
 {
-    public ObservableList<TableRowEntry> tableItems      = FXCollections.observableArrayList();
-    public ObservableList<Sensor>        sensorListItems = FXCollections.observableArrayList();
+    private ObservableList<TableRowEntry> tableItems      = FXCollections.observableArrayList();
+    private ObservableList<Sensor>        sensorListItems = FXCollections.observableArrayList();
     
     public ObservableList<TableRowEntry> getTableItems()
     {
@@ -33,5 +33,11 @@ public class MainModel
     public void removeGenerator(int generatorId)
     {
         tableItems.removeIf(entry -> entry.getGeneratorId() == generatorId);
+    }
+
+    public void setGeneratorCount(Integer id, long count)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -8,11 +8,11 @@ public class Database
 {
     private int uniqueId = 0;
     
-    private ObservableMap<Integer, SensorGenerator> idToSensorGenerator = FXCollections.observableHashMap();
+    private ObservableMap<Integer, SensorGeneratorInformation> idToSensorGenerator = FXCollections.observableHashMap();
     
     public void addGenerator(SensorGenerator generator)
     {
-        idToSensorGenerator.put(++uniqueId, generator);
+        idToSensorGenerator.put(++uniqueId, new SensorGeneratorInformation(generator));
     }
     
     public void removeGenerator(int generatorId)
@@ -20,8 +20,16 @@ public class Database
         idToSensorGenerator.remove(generatorId);
     }
     
-    public ObservableMap<Integer, SensorGenerator> getSensorGeneratorMap()
+    public ObservableMap<Integer, SensorGeneratorInformation> getSensorGeneratorMap()
     {
         return idToSensorGenerator;
+    }
+
+    public void setEnabled(int generatorId, boolean enabled)
+    {
+        if (idToSensorGenerator.containsKey(generatorId))
+        {
+            idToSensorGenerator.get(generatorId).setEnabled(enabled);
+        }
     }
 }
