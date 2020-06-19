@@ -2,7 +2,7 @@ package presentation.sensor;
 
 import controller.MainController;
 import javafx.scene.control.TextField;
-import mil.af.eglin.ccf.rt.fx.layout.VBox;
+import javafx.scene.layout.VBox;
 
 public class ArdsCreationPane extends SensorCreationPane
 {

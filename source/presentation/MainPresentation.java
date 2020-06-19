@@ -1,16 +1,24 @@
 package presentation;
 
+import abstraction.immutable.OutputChannel;
+import control.DeckPane;
 import controller.MainController;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import presentation.output.MissionSensorOutputPane;
+import presentation.output.RawOutputPane;
+import presentation.output.TspiNodeOutputPane;
 
 public class MainPresentation extends BorderPane
 {
@@ -51,6 +59,10 @@ public class MainPresentation extends BorderPane
         columnRate.setCellValueFactory(cellData -> cellData.getValue().rateProperty());
         columnRate.setPrefWidth(50);
         
+        TableColumn<TableRowEntry, Number> columnChannel = new TableColumn<>("Channel");
+        columnChannel.setCellValueFactory(cellData -> cellData.getValue().channelProperty());
+        columnChannel.setPrefWidth(50);
+        
         TableColumn<TableRowEntry, Number> columnCount = new TableColumn<>("Count");
         columnCount.setCellValueFactory(cellData -> cellData.getValue().countProperty());
         columnCount.setPrefWidth(50);
@@ -59,6 +71,7 @@ public class MainPresentation extends BorderPane
         table.getColumns().add(columnSensor);
         table.getColumns().add(columnDescription);
         table.getColumns().add(columnRate);
+        table.getColumns().add(columnChannel);
         table.getColumns().add(columnCount);
         table.setItems(controller.getModel().getTableItems());
         
@@ -72,11 +85,47 @@ public class MainPresentation extends BorderPane
         table.setContextMenu(menu);
         table.setEditable(true);
         
-        VBox vbox = new VBox();
-        vbox.getChildren().addAll(create, table);
         
-        // TODO add output destination information
-
-        setCenter(vbox);
+        HBox output = new HBox();
+        {
+            VBox outputSelection = new VBox();
+            {
+                ToggleGroup outputGroup = new ToggleGroup();
+                for (OutputChannel channel : OutputChannel.values())
+                {
+                    RadioButton radioButton = new RadioButton(channel.toString());
+                    radioButton.setOnAction(e -> controller.setOutputChannelSelected(channel));
+                    radioButton.setToggleGroup(outputGroup);
+                    
+                    outputSelection.getChildren().add(radioButton);
+                }
+            }
+            output.getChildren().add(outputSelection);
+            
+            DeckPane outputDeck = new DeckPane();
+            {
+                // TODO enumerate and create dynamically?
+                outputDeck.addCard(OutputChannel.TSPI_NODE.toString(), new TspiNodeOutputPane(controller));
+                outputDeck.addCard(OutputChannel.RAW.toString(), new RawOutputPane(controller));
+                outputDeck.addCard(OutputChannel.MISSION_SENSOR.toString(), new MissionSensorOutputPane(controller));
+            }
+            outputDeck.showCard(OutputChannel.TSPI_NODE.toString());
+            controller.getModel().outputChannelProperty().addListener((obj, o, n) -> outputDeck.showCard(n.toString()));
+            output.getChildren().add(outputDeck);
+            
+            // TODO need to select the right radio button on a model outputChannel update
+        }
+        
+        VBox center = new VBox();
+        {
+            HBox top = new HBox();
+            {
+                top.getChildren().add(create);
+                top.getChildren().add(output);
+            }
+            center.getChildren().add(top);
+            center.getChildren().add(table);
+        }
+        setCenter(center);
     }
 }

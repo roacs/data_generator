@@ -4,12 +4,13 @@ import java.nio.ByteBuffer;
 
 public class FPS16SensorGenerator implements SensorGenerator
 {
-    public static final int DEFAULT_RATE = 10;
+    public static final int DEFAULT_RATE    = 10;
+    public static final int DEFAULT_CHANNEL = 31;
 
     private String          missionNumber;
     private String          jobOrderNumber;
 
-    private long            count        = 0;
+    private long            count           = 0;
     
     public FPS16SensorGenerator(String missionNumber, String jobOrderNumber)
     {

@@ -2,22 +2,26 @@ package abstraction;
 
 import abstraction.immutable.SensorGenerator;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 
 public class SensorGeneratorInformation
 {
-    private BooleanProperty enabledProperty = new SimpleBooleanProperty();
-    private SensorGenerator sensorGenerator;
-    private LongProperty    countProperty   = new SimpleLongProperty();
-    private LongProperty    rateProperty    = new SimpleLongProperty();
+    private final SensorGenerator sensorGenerator;
+    private final BooleanProperty enabledProperty = new SimpleBooleanProperty(true);
+    private final IntegerProperty channelProperty = new SimpleIntegerProperty(0);
+    private final LongProperty    countProperty   = new SimpleLongProperty(0);
+    private final IntegerProperty rateProperty    = new SimpleIntegerProperty(1);
 
-
-    public SensorGeneratorInformation(int rate, SensorGenerator sensorGenerator)
+    public SensorGeneratorInformation(int rate, int channel, SensorGenerator sensorGenerator)
     {
-        this.rateProperty.set(rate);
         this.sensorGenerator = sensorGenerator;
+        this.channelProperty.set(channel);
+        this.countProperty.set(0);
+        this.rateProperty.set(rate);
     }
 
     public BooleanProperty enabledProperty()
@@ -44,15 +48,25 @@ public class SensorGeneratorInformation
     {
         return countProperty.get();
     }
-
-    public void setCount(long count)
-    {
-        this.countProperty.set(count);
-    }
     
     public void incrementCount()
     {
         this.countProperty.set(getCount() + 1);
+    }
+    
+    public IntegerProperty channelProperty()
+    {
+        return channelProperty;
+    }
+
+    public void setChannel(int channel)
+    {
+        this.channelProperty.set(channel);
+    }
+
+    public int getChannel()
+    {
+        return this.channelProperty.get();
     }
 
     public SensorGenerator getSensorGenerator()
@@ -60,12 +74,7 @@ public class SensorGeneratorInformation
         return sensorGenerator;
     }
 
-    public void setSensorGenerator(SensorGenerator sensorGenerator)
-    {
-        this.sensorGenerator = sensorGenerator;
-    }
-
-    public LongProperty rateProperty()
+    public IntegerProperty rateProperty()
     {
         return rateProperty;
     }
@@ -75,7 +84,7 @@ public class SensorGeneratorInformation
         this.rateProperty.set(rate);
     }
 
-    public long getRate()
+    public int getRate()
     {
         return this.rateProperty.get();
     }

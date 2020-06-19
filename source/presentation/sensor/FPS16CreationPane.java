@@ -5,7 +5,7 @@ import control.JobOrderNumberTextField;
 import control.MissionNumberTextField;
 import controller.MainController;
 import javafx.scene.control.TextField;
-import mil.af.eglin.ccf.rt.fx.layout.VBox;
+import javafx.scene.layout.VBox;
 
 public class FPS16CreationPane extends SensorCreationPane
 {
@@ -19,6 +19,7 @@ public class FPS16CreationPane extends SensorCreationPane
         this.controller = controller;
         
         setRate(FPS16SensorGenerator.DEFAULT_RATE);
+        setChannel(FPS16SensorGenerator.DEFAULT_CHANNEL);
         
         textJobOrderNumber.setPromptText("JON");
         
@@ -50,6 +51,6 @@ public class FPS16CreationPane extends SensorCreationPane
         String jobOrderNumber = textJobOrderNumber.getText();
         
         FPS16SensorGenerator generator = new FPS16SensorGenerator(missionNumber, jobOrderNumber);
-        controller.addGenerator(getRate(), generator);
+        controller.addGenerator(getRate(), getChannel(), generator);
     }
 }

@@ -3,6 +3,8 @@ package controller;
 import abstraction.Database;
 import abstraction.OutputTransmitter;
 import abstraction.SensorGeneratorInformation;
+import abstraction.immutable.MissionNumber;
+import abstraction.immutable.OutputChannel;
 import abstraction.immutable.Sensor;
 import abstraction.immutable.SensorGenerator;
 import javafx.collections.FXCollections;
@@ -29,7 +31,7 @@ public class MainController
         {
             if (c.wasAdded())
             {
-                model.addGenerator(c.getKey(), c.getValueAdded().getSensorGenerator(), c.getValueAdded().getRate());
+                model.addGenerator(c.getKey(), c.getValueAdded().getSensorGenerator(), c.getValueAdded().getRate(), c.getValueAdded().getChannel());
                 c.getValueAdded().countProperty().addListener((obs, o, n) -> model.setGeneratorCount(c.getKey(), n.longValue()));
                 
                 transmitter.addGenerator(c.getKey(), c.getValueAdded());
@@ -42,10 +44,15 @@ public class MainController
             }
         }));
         
-        // TODO configure the output for the OutputTransmitter, options:
-        //     TspiNode - need TspiNodeData header - where do we get the channel?
-        //     RawChannel - need RawChannelData header - where do we get the channel?
-        //     Mission Sensor Channel - need SensorChannelData header - where do we get the sensor name
+        database.outputChannelProperty().addListener((obj, o, n) ->
+        {
+            model.setOutputChannel(n);
+            transmitter.updateOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get());
+        });
+        database.missionNumberProperty().addListener((obj, o, n) -> transmitter.updateOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get()));
+        database.hostnameProperty().addListener((obj, o, n) -> transmitter.updateOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get()));
+        
+        model.setOutputChannel(OutputChannel.TSPI_NODE);
     }
 
     public void stop()
@@ -63,9 +70,9 @@ public class MainController
         return presentation;
     }
 
-    public void addGenerator(int rate, SensorGenerator generator)
+    public void addGenerator(int rate, int channel, SensorGenerator generator)
     {
-        database.addGenerator(rate, generator);
+        database.addGenerator(rate, channel, generator);
     }
 
     public void removeGenerator(int generatorId)
@@ -76,5 +83,20 @@ public class MainController
     public void setEnabled(int generatorId, boolean enabled)
     {
         database.setEnabled(generatorId, enabled);
+    }
+
+    public void setOutputChannelSelected(OutputChannel channel)
+    {
+        database.setOutputChannel(channel);
+    }
+
+    public void setMissionNumber(MissionNumber missionNumber)
+    {
+        database.setMissionNumber(missionNumber);
+    }
+
+    public void setHostname(String hostname)
+    {
+        database.setHostname(hostname);
     }
 }

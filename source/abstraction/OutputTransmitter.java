@@ -7,6 +7,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import abstraction.immutable.MissionNumber;
+import abstraction.immutable.OutputChannel;
+
 public class OutputTransmitter
 {
     private final Map<Integer, ScheduledFuture<?>> generatorToThread = new HashMap<>();
@@ -44,5 +47,23 @@ public class OutputTransmitter
     private long getRateInMilliseconds(long hertz)
     {
         return 1000 / hertz;
+    }
+
+    public void updateOutputDestination(OutputChannel outputChannel, String hostname, MissionNumber missionNumber)
+    {
+        // TODO set up output destinations based on inputs, error if something is missing
+        if (outputChannel == OutputChannel.MISSION_SENSOR)
+        {
+            
+        }
+        else if (outputChannel == OutputChannel.RAW)
+        {
+            
+        }
+        else if (outputChannel == OutputChannel.TSPI_NODE)
+        {
+            
+        }
+        System.out.println(outputChannel + " " + hostname + " " + missionNumber);
     }
 }

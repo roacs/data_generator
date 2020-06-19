@@ -1,8 +1,10 @@
 package presentation;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -14,10 +16,11 @@ public class TableRowEntry
     private BooleanProperty enabledProperty     = new SimpleBooleanProperty();
     private StringProperty  sensorProperty      = new SimpleStringProperty();
     private StringProperty  descriptionProperty = new SimpleStringProperty();
-    private LongProperty    rateProperty        = new SimpleLongProperty();
+    private IntegerProperty rateProperty        = new SimpleIntegerProperty();
+    private IntegerProperty channelProperty     = new SimpleIntegerProperty();
     private LongProperty    countProperty       = new SimpleLongProperty();
 
-    public TableRowEntry(int uniqueId, String sensor, String description, long rate)
+    public TableRowEntry(int uniqueId, String sensor, String description, int rate, int channel)
     {
         this.generatorId = uniqueId;
         
@@ -25,6 +28,7 @@ public class TableRowEntry
         this.sensorProperty.set(sensor);
         this.descriptionProperty.set(description);
         this.rateProperty.set(rate);
+        this.channelProperty.set(channel);
         this.countProperty.set(0);
     }
     
@@ -78,19 +82,34 @@ public class TableRowEntry
         return descriptionProperty.get();
     }
     
-    public LongProperty rateProperty()
+    public IntegerProperty rateProperty()
     {
         return rateProperty;
     }
 
-    public void setRate(long rate)
+    public void setRate(int rate)
     {
         rateProperty.setValue(rate);
     }
 
-    public long getRate()
+    public int getRate()
     {
         return rateProperty.get();
+    }
+
+    public IntegerProperty channelProperty()
+    {
+        return channelProperty;
+    }
+
+    public void setChannel(int channel)
+    {
+        channelProperty.setValue(channel);
+    }
+
+    public int getChannel()
+    {
+        return channelProperty.get();
     }
 
     public LongProperty countProperty()
