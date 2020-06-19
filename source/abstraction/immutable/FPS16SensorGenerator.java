@@ -4,10 +4,12 @@ import java.nio.ByteBuffer;
 
 public class FPS16SensorGenerator implements SensorGenerator
 {
-    private String missionNumber;
-    private String jobOrderNumber;
+    public static final int DEFAULT_RATE = 10;
 
-    private long   count = 0;
+    private String          missionNumber;
+    private String          jobOrderNumber;
+
+    private long            count        = 0;
     
     public FPS16SensorGenerator(String missionNumber, String jobOrderNumber)
     {
@@ -39,6 +41,7 @@ public class FPS16SensorGenerator implements SensorGenerator
     {
         // TODO call to the Position generator (static/dynamic) and set the latest position in the codec
         // TODO use the codec to create a ByteBuffer
-        return null;
+        
+        return ByteBuffer.allocate(3);
     }
 }

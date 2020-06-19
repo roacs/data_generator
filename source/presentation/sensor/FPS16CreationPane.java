@@ -1,6 +1,8 @@
 package presentation.sensor;
 
 import abstraction.immutable.FPS16SensorGenerator;
+import control.JobOrderNumberTextField;
+import control.MissionNumberTextField;
 import controller.MainController;
 import javafx.scene.control.TextField;
 import mil.af.eglin.ccf.rt.fx.layout.VBox;
@@ -8,17 +10,16 @@ import mil.af.eglin.ccf.rt.fx.layout.VBox;
 public class FPS16CreationPane extends SensorCreationPane
 {
     private final MainController controller;
-    
-    private final TextField textMissionNumber = new TextField();
-    private final TextField textJobOrderNumber = new TextField();
+
+    private final TextField      textMissionNumber  = new MissionNumberTextField();
+    private final TextField      textJobOrderNumber = new JobOrderNumberTextField();
     
     public FPS16CreationPane(MainController controller)
     {
         this.controller = controller;
         
-        VBox vbox = new VBox();
+        setRate(FPS16SensorGenerator.DEFAULT_RATE);
         
-        textMissionNumber.setPromptText("Mission Number");
         textJobOrderNumber.setPromptText("JON");
         
         textMissionNumber.setText("9999");
@@ -26,8 +27,11 @@ public class FPS16CreationPane extends SensorCreationPane
         
         // TODO add a TSPI Configurator
         
-        vbox.getChildren().addAll(textMissionNumber, textJobOrderNumber);
-        
+        VBox vbox = new VBox();
+        {
+            vbox.getChildren().add(textMissionNumber);
+            vbox.getChildren().add(textJobOrderNumber);
+        }
         setCenter(vbox);
     }
 
@@ -46,6 +50,6 @@ public class FPS16CreationPane extends SensorCreationPane
         String jobOrderNumber = textJobOrderNumber.getText();
         
         FPS16SensorGenerator generator = new FPS16SensorGenerator(missionNumber, jobOrderNumber);
-        controller.addGenerator(generator);
+        controller.addGenerator(getRate(), generator);
     }
 }

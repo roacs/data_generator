@@ -10,9 +10,9 @@ public class Database
     
     private ObservableMap<Integer, SensorGeneratorInformation> idToSensorGenerator = FXCollections.observableHashMap();
     
-    public void addGenerator(SensorGenerator generator)
+    public void addGenerator(int rate, SensorGenerator generator)
     {
-        idToSensorGenerator.put(++uniqueId, new SensorGeneratorInformation(generator));
+        idToSensorGenerator.put(++uniqueId, new SensorGeneratorInformation(rate, generator));
     }
     
     public void removeGenerator(int generatorId)

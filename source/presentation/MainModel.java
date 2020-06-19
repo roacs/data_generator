@@ -32,9 +32,9 @@ public class MainModel
         this.sensorListItems = sensorListItems;
     }
 
-    public void addGenerator(int generatorId, SensorGenerator s)
+    public void addGenerator(int generatorId, SensorGenerator s, long rate)
     {
-        TableRowEntry entry = new TableRowEntry(generatorId, s.getSensor(), s.getDescription());
+        TableRowEntry entry = new TableRowEntry(generatorId, s.getSensor(), s.getDescription(), rate);
         tableItems.add(entry);
         idToTableEntry.put(generatorId, entry);
     }

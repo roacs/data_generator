@@ -16,7 +16,7 @@ public class MainController
     private final MainPresentation  presentation;
 
     private final Database          database    = new Database();
-    private final OutputTransmitter transmitter = new OutputTransmitter(database);
+    private final OutputTransmitter transmitter = new OutputTransmitter();
 
     public MainController()
     {
@@ -29,17 +29,23 @@ public class MainController
         {
             if (c.wasAdded())
             {
-                model.addGenerator(c.getKey(), c.getValueAdded().getSensorGenerator());
+                model.addGenerator(c.getKey(), c.getValueAdded().getSensorGenerator(), c.getValueAdded().getRate());
                 c.getValueAdded().countProperty().addListener((obs, o, n) -> model.setGeneratorCount(c.getKey(), n.longValue()));
+                
+                transmitter.addGenerator(c.getKey(), c.getValueAdded());
             }
             else if (c.wasRemoved())
             {
                 model.removeGenerator(c.getKey());
-                // TODO remove listener?
+                // TODO remove count listener?
+                transmitter.removeGenerator(c.getKey());
             }
         }));
+    }
 
-        transmitter.start();
+    public void stop()
+    {
+        transmitter.stop();
     }
 
     public MainModel getModel()
@@ -52,9 +58,9 @@ public class MainController
         return presentation;
     }
 
-    public void addGenerator(SensorGenerator generator)
+    public void addGenerator(int rate, SensorGenerator generator)
     {
-        database.addGenerator(generator);
+        database.addGenerator(rate, generator);
     }
 
     public void removeGenerator(int generatorId)

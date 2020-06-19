@@ -14,15 +14,17 @@ public class TableRowEntry
     private BooleanProperty enabledProperty     = new SimpleBooleanProperty();
     private StringProperty  sensorProperty      = new SimpleStringProperty();
     private StringProperty  descriptionProperty = new SimpleStringProperty();
+    private LongProperty    rateProperty        = new SimpleLongProperty();
     private LongProperty    countProperty       = new SimpleLongProperty();
 
-    public TableRowEntry(int uniqueId, String sensor, String description)
+    public TableRowEntry(int uniqueId, String sensor, String description, long rate)
     {
         this.generatorId = uniqueId;
         
         this.enabledProperty.set(true);
         this.sensorProperty.set(sensor);
         this.descriptionProperty.set(description);
+        this.rateProperty.set(rate);
         this.countProperty.set(0);
     }
     
@@ -74,6 +76,21 @@ public class TableRowEntry
     public String getDescription()
     {
         return descriptionProperty.get();
+    }
+    
+    public LongProperty rateProperty()
+    {
+        return rateProperty;
+    }
+
+    public void setRate(long rate)
+    {
+        rateProperty.setValue(rate);
+    }
+
+    public long getRate()
+    {
+        return rateProperty.get();
     }
 
     public LongProperty countProperty()

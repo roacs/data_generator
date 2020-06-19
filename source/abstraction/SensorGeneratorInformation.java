@@ -8,13 +8,15 @@ import javafx.beans.property.SimpleLongProperty;
 
 public class SensorGeneratorInformation
 {
-    private BooleanProperty enabledProperty     = new SimpleBooleanProperty();
+    private BooleanProperty enabledProperty = new SimpleBooleanProperty();
     private SensorGenerator sensorGenerator;
-    private LongProperty    countProperty       = new SimpleLongProperty();
+    private LongProperty    countProperty   = new SimpleLongProperty();
+    private LongProperty    rateProperty    = new SimpleLongProperty();
 
 
-    public SensorGeneratorInformation(SensorGenerator sensorGenerator)
+    public SensorGeneratorInformation(int rate, SensorGenerator sensorGenerator)
     {
+        this.rateProperty.set(rate);
         this.sensorGenerator = sensorGenerator;
     }
 
@@ -61,5 +63,20 @@ public class SensorGeneratorInformation
     public void setSensorGenerator(SensorGenerator sensorGenerator)
     {
         this.sensorGenerator = sensorGenerator;
+    }
+
+    public LongProperty rateProperty()
+    {
+        return rateProperty;
+    }
+
+    public void setRate(int rate)
+    {
+        this.rateProperty.set(rate);
+    }
+
+    public long getRate()
+    {
+        return this.rateProperty.get();
     }
 }

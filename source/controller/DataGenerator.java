@@ -5,7 +5,8 @@ import javafx.stage.Stage;
 
 public class DataGenerator extends Application
 {
-    private Stage stage;
+    private Stage          stage;
+    private MainController controller;
 
     public static void main(String[] args)
     {
@@ -22,12 +23,18 @@ public class DataGenerator extends Application
     {
         this.stage = stage;
 
-        MainController controller = new MainController();
+        controller = new MainController();
 
         stage.setTitle("Data Generator");
 
         Scene scene = new Scene(controller.getPresentation());
         this.stage.setScene(scene);
         this.stage.show();
+    }
+    
+    @Override
+    public void stop()
+    {
+        controller.stop();
     }
 }

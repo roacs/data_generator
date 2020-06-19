@@ -47,6 +47,10 @@ public class MainPresentation extends BorderPane
         columnDescription.setCellValueFactory(cellData -> cellData.getValue().descriptionProperty());
         columnDescription.setPrefWidth(200);
         
+        TableColumn<TableRowEntry, Number> columnRate = new TableColumn<>("Rate");
+        columnRate.setCellValueFactory(cellData -> cellData.getValue().rateProperty());
+        columnRate.setPrefWidth(50);
+        
         TableColumn<TableRowEntry, Number> columnCount = new TableColumn<>("Count");
         columnCount.setCellValueFactory(cellData -> cellData.getValue().countProperty());
         columnCount.setPrefWidth(50);
@@ -54,6 +58,7 @@ public class MainPresentation extends BorderPane
         table.getColumns().add(columnEnabled);
         table.getColumns().add(columnSensor);
         table.getColumns().add(columnDescription);
+        table.getColumns().add(columnRate);
         table.getColumns().add(columnCount);
         table.setItems(controller.getModel().getTableItems());
         
@@ -69,9 +74,6 @@ public class MainPresentation extends BorderPane
         
         VBox vbox = new VBox();
         vbox.getChildren().addAll(create, table);
-        
-        // TODO change enabled column to checkboxes
-        // TODO add callbacks for enabled 
         
         // TODO add output destination information
 
