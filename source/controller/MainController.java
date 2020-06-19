@@ -41,6 +41,11 @@ public class MainController
                 transmitter.removeGenerator(c.getKey());
             }
         }));
+        
+        // TODO configure the output for the OutputTransmitter, options:
+        //     TspiNode - need TspiNodeData header - where do we get the channel?
+        //     RawChannel - need RawChannelData header - where do we get the channel?
+        //     Mission Sensor Channel - need SensorChannelData header - where do we get the sensor name
     }
 
     public void stop()

@@ -12,11 +12,6 @@ public class OutputTransmitter
     private final Map<Integer, ScheduledFuture<?>> generatorToThread = new HashMap<>();
     private final ScheduledExecutorService         executor          = Executors.newScheduledThreadPool(10);
 
-    public void start()
-    {
-        // TODO need output address, format as TspiNode, RawChannel or Mission channel?
-    }
-
     public void stop()
     {
         executor.shutdownNow();
