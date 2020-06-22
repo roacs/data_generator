@@ -1,5 +1,9 @@
 package abstraction;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -14,10 +18,25 @@ public class OutputTransmitter
 {
     private final Map<Integer, ScheduledFuture<?>> generatorToThread = new HashMap<>();
     private final ScheduledExecutorService         executor          = Executors.newScheduledThreadPool(10);
+    private final DatagramChannel                  datagramChannel;
+    private OutputChannel                          outputChannel;
+    private InetSocketAddress                      destinationAddress;
 
+    public OutputTransmitter() throws IOException
+    {
+        datagramChannel = DatagramChannel.open();
+    }
+    
     public void stop()
     {
         executor.shutdownNow();
+        try
+        {
+            datagramChannel.close();
+        }
+        catch (IOException ignore)
+        {
+        }
     }
 
     public void addGenerator(Integer generatorId, SensorGeneratorInformation sensorGeneratorInformation)
@@ -26,11 +45,16 @@ public class OutputTransmitter
         {
             if (sensorGeneratorInformation.isEnabled())
             {
-                // TODO generate a packet and send it
-                sensorGeneratorInformation.getSensorGenerator().getNext();
-                
-
-                sensorGeneratorInformation.incrementCount();
+                ByteBuffer rawSensorData = sensorGeneratorInformation.getSensorGenerator().getNext();
+                try
+                {
+                    datagramChannel.send(wrapSensorData(outputChannel, rawSensorData), destinationAddress);
+                    sensorGeneratorInformation.incrementCount();
+                }
+                catch (IOException e)
+                {
+                    sensorGeneratorInformation.setError(true);
+                }
             }
         }, 0, getRateInMilliseconds(sensorGeneratorInformation.getRate()), TimeUnit.MILLISECONDS));
     }
@@ -49,9 +73,38 @@ public class OutputTransmitter
         return 1000 / hertz;
     }
 
-    public void updateOutputDestination(OutputChannel outputChannel, String hostname, MissionNumber missionNumber)
+    public void setOutputDestination(OutputChannel outputChannel, String hostname, MissionNumber missionNumber)
+    {
+        this.outputChannel = outputChannel;
+        
+        destinationAddress = getOutputAddress(outputChannel, hostname, missionNumber);
+    }
+    
+    private static InetSocketAddress getOutputAddress(OutputChannel outputChannel, String hostname, MissionNumber missionNumber)
     {
         // TODO set up output destinations based on inputs, error if something is missing
+        if (outputChannel == OutputChannel.MISSION_SENSOR)
+        {
+            return new InetSocketAddress("127.0.0.1", 55001);
+        }
+        else if (outputChannel == OutputChannel.RAW)
+        {
+            return new InetSocketAddress("127.0.0.1", 55001);
+        }
+        else if (outputChannel == OutputChannel.TSPI_NODE)
+        {
+            return new InetSocketAddress("127.0.0.1", 55001);
+        }
+        else
+        {
+            throw new IllegalStateException("Somehow an enum was selected that does not exist.");
+        }
+    }
+    
+    private static ByteBuffer wrapSensorData(OutputChannel outputChannel, ByteBuffer rawSensorData)
+    {
+        // TODO wrap the packet in the appropriate header
+        ByteBuffer packet;
         if (outputChannel == OutputChannel.MISSION_SENSOR)
         {
             
@@ -64,6 +117,7 @@ public class OutputTransmitter
         {
             
         }
-        System.out.println(outputChannel + " " + hostname + " " + missionNumber);
+        
+        return rawSensorData;
     }
 }

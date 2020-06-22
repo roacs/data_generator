@@ -1,4 +1,6 @@
 package controller;
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -21,7 +23,7 @@ public class DataGenerator extends Application
     }
 
     @Override
-    public void start(Stage stage)
+    public void start(Stage stage) throws IOException
     {
         this.stage = stage;
 

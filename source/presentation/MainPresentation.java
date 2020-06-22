@@ -1,5 +1,8 @@
 package presentation;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import abstraction.immutable.OutputChannel;
 import control.DeckPane;
 import controller.MainController;
@@ -85,35 +88,43 @@ public class MainPresentation extends BorderPane
         table.setContextMenu(menu);
         table.setEditable(true);
         
+        Map<OutputChannel, RadioButton> outputChannelRadioButtons = new HashMap<OutputChannel, RadioButton>();
+        ToggleGroup outputGroup = new ToggleGroup();
+        for (OutputChannel channel : OutputChannel.values())
+        {
+            RadioButton radioButton = new RadioButton(channel.toString());
+            radioButton.setOnAction(e -> controller.setOutputChannelSelected(channel));
+            radioButton.setToggleGroup(outputGroup);
+            
+            outputChannelRadioButtons.put(channel, radioButton);
+        }
+        
+        DeckPane outputDeck = new DeckPane();
+        {
+            // TODO enumerate and create dynamically in the above for loop? similar to SensorCreationPane?
+            outputDeck.addCard(OutputChannel.TSPI_NODE.toString(), new TspiNodeOutputPane(controller));
+            outputDeck.addCard(OutputChannel.RAW.toString(), new RawOutputPane(controller));
+            outputDeck.addCard(OutputChannel.MISSION_SENSOR.toString(), new MissionSensorOutputPane(controller));
+        }
+        
+        controller.getModel().outputChannelProperty().addListener((obj, o, n) -> 
+        {
+            outputGroup.selectToggle(outputChannelRadioButtons.get(n));
+            outputDeck.showCard(n.toString());
+        });
         
         HBox output = new HBox();
         {
             VBox outputSelection = new VBox();
             {
-                ToggleGroup outputGroup = new ToggleGroup();
-                for (OutputChannel channel : OutputChannel.values())
+                for (RadioButton radio : outputChannelRadioButtons.values())
                 {
-                    RadioButton radioButton = new RadioButton(channel.toString());
-                    radioButton.setOnAction(e -> controller.setOutputChannelSelected(channel));
-                    radioButton.setToggleGroup(outputGroup);
-                    
-                    outputSelection.getChildren().add(radioButton);
+                    outputSelection.getChildren().add(radio);
                 }
             }
             output.getChildren().add(outputSelection);
-            
-            DeckPane outputDeck = new DeckPane();
-            {
-                // TODO enumerate and create dynamically?
-                outputDeck.addCard(OutputChannel.TSPI_NODE.toString(), new TspiNodeOutputPane(controller));
-                outputDeck.addCard(OutputChannel.RAW.toString(), new RawOutputPane(controller));
-                outputDeck.addCard(OutputChannel.MISSION_SENSOR.toString(), new MissionSensorOutputPane(controller));
-            }
-            outputDeck.showCard(OutputChannel.TSPI_NODE.toString());
-            controller.getModel().outputChannelProperty().addListener((obj, o, n) -> outputDeck.showCard(n.toString()));
+
             output.getChildren().add(outputDeck);
-            
-            // TODO need to select the right radio button on a model outputChannel update
         }
         
         VBox center = new VBox();

@@ -15,6 +15,7 @@ public class SensorGeneratorInformation
     private final IntegerProperty channelProperty = new SimpleIntegerProperty(0);
     private final LongProperty    countProperty   = new SimpleLongProperty(0);
     private final IntegerProperty rateProperty    = new SimpleIntegerProperty(1);
+    private final BooleanProperty errorProperty   = new SimpleBooleanProperty(false);
 
     public SensorGeneratorInformation(int rate, int channel, SensorGenerator sensorGenerator)
     {
@@ -87,5 +88,20 @@ public class SensorGeneratorInformation
     public int getRate()
     {
         return this.rateProperty.get();
+    }
+    
+    public BooleanProperty errorProperty()
+    {
+        return errorProperty;
+    }
+    
+    public boolean isError()
+    {
+        return errorProperty.get();
+    }
+
+    public void setError(boolean error)
+    {
+        this.errorProperty.set(error);
     }
 }

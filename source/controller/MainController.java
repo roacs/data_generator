@@ -1,5 +1,7 @@
 package controller;
 
+import java.io.IOException;
+
 import abstraction.Database;
 import abstraction.OutputTransmitter;
 import abstraction.SensorGeneratorInformation;
@@ -16,14 +18,14 @@ public class MainController
 {
     private final MainModel         model;
     private final MainPresentation  presentation;
+    private final OutputTransmitter transmitter;
+    private final Database          database = new Database();
 
-    private final Database          database    = new Database();
-    private final OutputTransmitter transmitter = new OutputTransmitter();
-
-    public MainController()
+    public MainController() throws IOException
     {
         model = new MainModel();
         presentation = new MainPresentation(this);
+        transmitter = new OutputTransmitter();
 
         model.setSensorListItems(FXCollections.observableArrayList(Sensor.values()));
 
@@ -47,12 +49,13 @@ public class MainController
         database.outputChannelProperty().addListener((obj, o, n) ->
         {
             model.setOutputChannel(n);
-            transmitter.updateOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get());
+            transmitter.setOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get());
         });
-        database.missionNumberProperty().addListener((obj, o, n) -> transmitter.updateOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get()));
-        database.hostnameProperty().addListener((obj, o, n) -> transmitter.updateOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get()));
+        database.missionNumberProperty().addListener((obj, o, n) -> transmitter.setOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get()));
+        database.hostnameProperty().addListener((obj, o, n) -> transmitter.setOutputDestination(database.outputChannelProperty().get(), database.hostnameProperty().get(), database.missionNumberProperty().get()));
         
         model.setOutputChannel(OutputChannel.TSPI_NODE);
+        setOutputChannelSelected(OutputChannel.TSPI_NODE);
     }
 
     public void stop()
