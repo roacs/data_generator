@@ -39,24 +39,24 @@ public class OutputTransmitter
         }
     }
 
-    public void addGenerator(Integer generatorId, SensorGeneratorInformation sensorGeneratorInformation)
+    public void addGenerator(Integer generatorId, SensorDataGeneratorInformation generatorInformation)
     {
         generatorToThread.put(generatorId, executor.scheduleAtFixedRate(() ->
         {
-            if (sensorGeneratorInformation.isEnabled())
+            if (generatorInformation.isEnabled())
             {
-                ByteBuffer rawSensorData = sensorGeneratorInformation.getSensorGenerator().getNext();
+                ByteBuffer rawSensorData = generatorInformation.getSensorGenerator().getNext();
                 try
                 {
                     datagramChannel.send(wrapSensorData(outputChannel, rawSensorData), destinationAddress);
-                    sensorGeneratorInformation.incrementCount();
+                    generatorInformation.incrementCount();
                 }
                 catch (IOException e)
                 {
-                    sensorGeneratorInformation.setError(true);
+                    generatorInformation.setError(true);
                 }
             }
-        }, 0, getRateInMilliseconds(sensorGeneratorInformation.getRate()), TimeUnit.MILLISECONDS));
+        }, 0, getRateInMilliseconds(generatorInformation.getRate()), TimeUnit.MILLISECONDS));
     }
 
     public void removeGenerator(Integer generatorId)

@@ -1,7 +1,7 @@
 package presentation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import abstraction.immutable.OutputChannel;
 import control.DeckPane;
@@ -66,6 +66,9 @@ public class MainPresentation extends BorderPane
         columnChannel.setCellValueFactory(cellData -> cellData.getValue().channelProperty());
         columnChannel.setPrefWidth(50);
         
+        TableColumn<TableRowEntry, Number> columnFill = new TableColumn<>("");
+        columnFill.setPrefWidth(columnChannel.getPrefWidth());
+        
         TableColumn<TableRowEntry, Number> columnCount = new TableColumn<>("Count");
         columnCount.setCellValueFactory(cellData -> cellData.getValue().countProperty());
         columnCount.setPrefWidth(50);
@@ -75,20 +78,21 @@ public class MainPresentation extends BorderPane
         table.getColumns().add(columnDescription);
         table.getColumns().add(columnRate);
         table.getColumns().add(columnChannel);
+        table.getColumns().add(columnFill);
         table.getColumns().add(columnCount);
         table.setItems(controller.getModel().getTableItems());
         
         ContextMenu menu = new ContextMenu();
         {
             MenuItem menuRemove = new MenuItem("Remove");
-            menuRemove.setOnAction(e -> controller.removeGenerator(table.getSelectionModel().getSelectedItem().getGeneratorId()));
+            menuRemove.setOnAction(e -> controller.removeSensorDataGenerator(table.getSelectionModel().getSelectedItem().getGeneratorId()));
             
             menu.getItems().add(menuRemove);
         }
         table.setContextMenu(menu);
         table.setEditable(true);
         
-        Map<OutputChannel, RadioButton> outputChannelRadioButtons = new HashMap<OutputChannel, RadioButton>();
+        SortedMap<OutputChannel, RadioButton> outputChannelRadioButtons = new TreeMap<OutputChannel, RadioButton>();
         ToggleGroup outputGroup = new ToggleGroup();
         for (OutputChannel channel : OutputChannel.values())
         {
@@ -101,7 +105,6 @@ public class MainPresentation extends BorderPane
         
         DeckPane outputDeck = new DeckPane();
         {
-            // TODO enumerate and create dynamically in the above for loop? similar to SensorCreationPane?
             outputDeck.addCard(OutputChannel.TSPI_NODE.toString(), new TspiNodeOutputPane(controller));
             outputDeck.addCard(OutputChannel.RAW.toString(), new RawOutputPane(controller));
             outputDeck.addCard(OutputChannel.MISSION_SENSOR.toString(), new MissionSensorOutputPane(controller));
@@ -109,6 +112,9 @@ public class MainPresentation extends BorderPane
         
         controller.getModel().outputChannelProperty().addListener((obj, o, n) -> 
         {
+            columnChannel.setVisible(n != OutputChannel.MISSION_SENSOR);
+            columnFill.setVisible(!columnChannel.isVisible());
+            
             outputGroup.selectToggle(outputChannelRadioButtons.get(n));
             outputDeck.showCard(n.toString());
         });

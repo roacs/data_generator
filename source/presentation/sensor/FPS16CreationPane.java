@@ -1,37 +1,41 @@
 package presentation.sensor;
 
-import abstraction.immutable.FPS16SensorGenerator;
+import abstraction.immutable.sensor.FPS16SensorDataGenerator;
 import control.JobOrderNumberTextField;
 import control.MissionNumberTextField;
 import controller.MainController;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import presentation.tspi.TSPIConfigurator;
 
 public class FPS16CreationPane extends SensorCreationPane
 {
-    private final MainController controller;
+    private final MainController   controller;
 
-    private final TextField      textMissionNumber  = new MissionNumberTextField();
-    private final TextField      textJobOrderNumber = new JobOrderNumberTextField();
+    private final TextField        textMissionNumber  = new MissionNumberTextField();
+    private final TextField        textJobOrderNumber = new JobOrderNumberTextField();
+    private final TSPIConfigurator tspiConfigurator   = new TSPIConfigurator();
     
     public FPS16CreationPane(MainController controller)
     {
         this.controller = controller;
         
-        setRate(FPS16SensorGenerator.DEFAULT_RATE);
-        setChannel(FPS16SensorGenerator.DEFAULT_CHANNEL);
+        setRate(FPS16SensorDataGenerator.DEFAULT_RATE);
+        setChannel(FPS16SensorDataGenerator.DEFAULT_CHANNEL);
         
         textJobOrderNumber.setPromptText("JON");
         
         textMissionNumber.setText("9999");
         textJobOrderNumber.setText("99999999");
         
-        // TODO add a TSPI Configurator
-        
         VBox vbox = new VBox();
         {
+            vbox.getChildren().add(new Label("Sensor"));
             vbox.getChildren().add(textMissionNumber);
             vbox.getChildren().add(textJobOrderNumber);
+            vbox.getChildren().add(new Label("TSPI"));
+            vbox.getChildren().add(tspiConfigurator);
         }
         setCenter(vbox);
     }
@@ -50,7 +54,7 @@ public class FPS16CreationPane extends SensorCreationPane
         String missionNumber = textMissionNumber.getText();
         String jobOrderNumber = textJobOrderNumber.getText();
         
-        FPS16SensorGenerator generator = new FPS16SensorGenerator(missionNumber, jobOrderNumber);
-        controller.addGenerator(getRate(), getChannel(), generator);
+        FPS16SensorDataGenerator generator = new FPS16SensorDataGenerator(tspiConfigurator.getTspiGenerator(), missionNumber, jobOrderNumber);
+        controller.addSensorDataGenerator(getRate(), getChannel(), generator);
     }
 }

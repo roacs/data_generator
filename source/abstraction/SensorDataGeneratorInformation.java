@@ -1,6 +1,6 @@
 package abstraction;
 
-import abstraction.immutable.SensorGenerator;
+import abstraction.immutable.sensor.SensorDataGenerator;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
@@ -8,18 +8,18 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 
-public class SensorGeneratorInformation
+public class SensorDataGeneratorInformation
 {
-    private final SensorGenerator sensorGenerator;
-    private final BooleanProperty enabledProperty = new SimpleBooleanProperty(true);
-    private final IntegerProperty channelProperty = new SimpleIntegerProperty(0);
-    private final LongProperty    countProperty   = new SimpleLongProperty(0);
-    private final IntegerProperty rateProperty    = new SimpleIntegerProperty(1);
-    private final BooleanProperty errorProperty   = new SimpleBooleanProperty(false);
+    private final SensorDataGenerator sensorDataGenerator;
+    private final BooleanProperty     enabledProperty = new SimpleBooleanProperty(true);
+    private final IntegerProperty     channelProperty = new SimpleIntegerProperty(0);
+    private final LongProperty        countProperty   = new SimpleLongProperty(0);
+    private final IntegerProperty     rateProperty    = new SimpleIntegerProperty(1);
+    private final BooleanProperty     errorProperty   = new SimpleBooleanProperty(false);
 
-    public SensorGeneratorInformation(int rate, int channel, SensorGenerator sensorGenerator)
+    public SensorDataGeneratorInformation(int rate, int channel, SensorDataGenerator sensorDataGenerator)
     {
-        this.sensorGenerator = sensorGenerator;
+        this.sensorDataGenerator = sensorDataGenerator;
         this.channelProperty.set(channel);
         this.countProperty.set(0);
         this.rateProperty.set(rate);
@@ -70,9 +70,9 @@ public class SensorGeneratorInformation
         return this.channelProperty.get();
     }
 
-    public SensorGenerator getSensorGenerator()
+    public SensorDataGenerator getSensorGenerator()
     {
-        return sensorGenerator;
+        return sensorDataGenerator;
     }
 
     public IntegerProperty rateProperty()

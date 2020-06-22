@@ -4,11 +4,11 @@ import java.io.IOException;
 
 import abstraction.Database;
 import abstraction.OutputTransmitter;
-import abstraction.SensorGeneratorInformation;
+import abstraction.SensorDataGeneratorInformation;
 import abstraction.immutable.MissionNumber;
 import abstraction.immutable.OutputChannel;
-import abstraction.immutable.Sensor;
-import abstraction.immutable.SensorGenerator;
+import abstraction.immutable.sensor.Sensor;
+import abstraction.immutable.sensor.SensorDataGenerator;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import presentation.MainModel;
@@ -29,18 +29,18 @@ public class MainController
 
         model.setSensorListItems(FXCollections.observableArrayList(Sensor.values()));
 
-        database.getSensorGeneratorMap().addListener((MapChangeListener<Integer, SensorGeneratorInformation>) (c ->
+        database.getSensorDataGeneratorMap().addListener((MapChangeListener<Integer, SensorDataGeneratorInformation>) (c ->
         {
             if (c.wasAdded())
             {
-                model.addGenerator(c.getKey(), c.getValueAdded().getSensorGenerator(), c.getValueAdded().getRate(), c.getValueAdded().getChannel());
-                c.getValueAdded().countProperty().addListener((obs, o, n) -> model.setGeneratorCount(c.getKey(), n.longValue()));
+                model.addSensorDataGenerator(c.getKey(), c.getValueAdded().getSensorGenerator(), c.getValueAdded().getRate(), c.getValueAdded().getChannel());
+                c.getValueAdded().countProperty().addListener((obs, o, n) -> model.setSensorDataGeneratorCount(c.getKey(), n.longValue()));
                 
                 transmitter.addGenerator(c.getKey(), c.getValueAdded());
             }
             else if (c.wasRemoved())
             {
-                model.removeGenerator(c.getKey());
+                model.removeSensorDataGenerator(c.getKey());
                 // TODO remove count listener?
                 transmitter.removeGenerator(c.getKey());
             }
@@ -73,19 +73,19 @@ public class MainController
         return presentation;
     }
 
-    public void addGenerator(int rate, int channel, SensorGenerator generator)
+    public void addSensorDataGenerator(int rate, int channel, SensorDataGenerator sensorDataGenerator)
     {
-        database.addGenerator(rate, channel, generator);
+        database.addSensorDataGenerator(rate, channel, sensorDataGenerator);
     }
 
-    public void removeGenerator(int generatorId)
+    public void removeSensorDataGenerator(int sensorDataGeneratorId)
     {
-        database.removeGenerator(generatorId);
+        database.removeSensorDataGenerator(sensorDataGeneratorId);
     }
 
-    public void setEnabled(int generatorId, boolean enabled)
+    public void setEnabled(int sensorDataGeneratorId, boolean enabled)
     {
-        database.setEnabled(generatorId, enabled);
+        database.setEnabled(sensorDataGeneratorId, enabled);
     }
 
     public void setOutputChannelSelected(OutputChannel channel)

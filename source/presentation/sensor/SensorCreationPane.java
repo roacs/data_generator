@@ -1,6 +1,7 @@
 package presentation.sensor;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.BorderPane;
@@ -77,6 +78,7 @@ public abstract class SensorCreationPane extends BorderPane
         
         VBox vbox = new VBox();
         {
+            vbox.getChildren().add(new Label("Output"));
             vbox.getChildren().add(textRate);
             vbox.getChildren().add(textChannel);
         }

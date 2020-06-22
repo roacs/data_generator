@@ -2,7 +2,7 @@ package abstraction;
 
 import abstraction.immutable.MissionNumber;
 import abstraction.immutable.OutputChannel;
-import abstraction.immutable.SensorGenerator;
+import abstraction.immutable.sensor.SensorDataGenerator;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -12,33 +12,33 @@ import javafx.collections.ObservableMap;
 
 public class Database
 {
-    private int                                                uniqueId              = 0;
+    private int                                                    uniqueId                = 0;
 
-    private ObservableMap<Integer, SensorGeneratorInformation> idToSensorGenerator   = FXCollections.observableHashMap();
-    private ObjectProperty<OutputChannel>                      outputChannelProperty = new SimpleObjectProperty<>();
-    private ObjectProperty<MissionNumber>                      missionNumberProperty = new SimpleObjectProperty<>();
-    private StringProperty                                     hostnameProperty      = new SimpleStringProperty();
+    private ObservableMap<Integer, SensorDataGeneratorInformation> idToSensorDataGenerator = FXCollections.observableHashMap();
+    private ObjectProperty<OutputChannel>                          outputChannelProperty   = new SimpleObjectProperty<>();
+    private ObjectProperty<MissionNumber>                          missionNumberProperty   = new SimpleObjectProperty<>();
+    private StringProperty                                         hostnameProperty        = new SimpleStringProperty();
 
-    public void addGenerator(int rate, int channel, SensorGenerator generator)
+    public void addSensorDataGenerator(int rate, int channel, SensorDataGenerator generator)
     {
-        idToSensorGenerator.put(++uniqueId, new SensorGeneratorInformation(rate, channel, generator));
+        idToSensorDataGenerator.put(++uniqueId, new SensorDataGeneratorInformation(rate, channel, generator));
     }
 
-    public void removeGenerator(int generatorId)
+    public void removeSensorDataGenerator(int sensorDataGeneratorId)
     {
-        idToSensorGenerator.remove(generatorId);
+        idToSensorDataGenerator.remove(sensorDataGeneratorId);
     }
 
-    public ObservableMap<Integer, SensorGeneratorInformation> getSensorGeneratorMap()
+    public ObservableMap<Integer, SensorDataGeneratorInformation> getSensorDataGeneratorMap()
     {
-        return idToSensorGenerator;
+        return idToSensorDataGenerator;
     }
 
-    public void setEnabled(int generatorId, boolean enabled)
+    public void setEnabled(int sensorDataGeneratorId, boolean enabled)
     {
-        if (idToSensorGenerator.containsKey(generatorId))
+        if (idToSensorDataGenerator.containsKey(sensorDataGeneratorId))
         {
-            idToSensorGenerator.get(generatorId).setEnabled(enabled);
+            idToSensorDataGenerator.get(sensorDataGeneratorId).setEnabled(enabled);
         }
     }
 

@@ -1,19 +1,23 @@
-package abstraction.immutable;
+package abstraction.immutable.sensor;
 
 import java.nio.ByteBuffer;
 
-public class FPS16SensorGenerator implements SensorGenerator
+import abstraction.immutable.tspi.TspiGenerator;
+
+public class FPS16SensorDataGenerator implements SensorDataGenerator
 {
     public static final int DEFAULT_RATE    = 10;
     public static final int DEFAULT_CHANNEL = 31;
 
+    private TspiGenerator   tspiGenerator;
     private String          missionNumber;
     private String          jobOrderNumber;
 
     private long            count           = 0;
     
-    public FPS16SensorGenerator(String missionNumber, String jobOrderNumber)
+    public FPS16SensorDataGenerator(TspiGenerator tspiGenerator, String missionNumber, String jobOrderNumber)
     {
+        this.tspiGenerator = tspiGenerator;
         this.missionNumber = missionNumber;
         this.jobOrderNumber = jobOrderNumber;
         // TODO create an instance of FPS16 codec and populate all the fields

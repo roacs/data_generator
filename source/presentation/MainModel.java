@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import abstraction.immutable.OutputChannel;
-import abstraction.immutable.Sensor;
-import abstraction.immutable.SensorGenerator;
+import abstraction.immutable.sensor.Sensor;
+import abstraction.immutable.sensor.SensorDataGenerator;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -36,14 +36,14 @@ public class MainModel
         this.sensorListItems = sensorListItems;
     }
 
-    public void addGenerator(int generatorId, SensorGenerator s, int rate, int channel)
+    public void addSensorDataGenerator(int generatorId, SensorDataGenerator s, int rate, int channel)
     {
         TableRowEntry entry = new TableRowEntry(generatorId, s.getSensor(), s.getDescription(), rate, channel);
         tableItems.add(entry);
         idToTableEntry.put(generatorId, entry);
     }
 
-    public void removeGenerator(int generatorId)
+    public void removeSensorDataGenerator(int generatorId)
     {
         if (idToTableEntry.containsKey(generatorId))
         {
@@ -52,11 +52,11 @@ public class MainModel
         }
     }
 
-    public void setGeneratorCount(Integer generatorId, long count)
+    public void setSensorDataGeneratorCount(Integer sensorDataGeneratorId, long count)
     {
-        if (idToTableEntry.containsKey(generatorId))
+        if (idToTableEntry.containsKey(sensorDataGeneratorId))
         {
-            idToTableEntry.get(generatorId).setCount(count);
+            idToTableEntry.get(sensorDataGeneratorId).setCount(count);
         }
     }
 
