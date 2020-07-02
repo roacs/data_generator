@@ -14,6 +14,7 @@ public class DeckPane extends StackPane
     {
         idToNode.put(id, card);
         getChildren().add(card);
+        card.setVisible(false);
     }
     
     public void showCard(String id)

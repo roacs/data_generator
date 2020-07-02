@@ -37,7 +37,7 @@ public class FPS16SensorDataGenerator implements SensorDataGenerator
     @Override
     public String getDescription()
     {
-        return codec.getMissionNumber() + jobOrderNumber;
+        return codec.getMissionNumber() + " TSPI: " + tspiGenerator.getDescription();
     }
 
     @Override
@@ -47,9 +47,9 @@ public class FPS16SensorDataGenerator implements SensorDataGenerator
     }
 
     @Override
-    public ByteBuffer getNext()
+    public ByteBuffer generateAtTime(long millis)
     {
-        tspiGenerator.next();
+        tspiGenerator.moveToTime(millis);
         codec.setPosition(tspiGenerator.getPosition());
         
         return Rics1TrackingRadarCodec.encode(codec);

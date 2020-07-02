@@ -6,7 +6,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 // TODO
-//  - maybe consider converting the output from an application-wide setting to a per sensor entry setting
+//  - consider converting the output from an application-wide setting to a per sensor entry setting
+//  - consider outputting generated data to a log for testing comparison
+//  - consider adding a tspi generator that reads from a file (rawch file?)
 public class DataGenerator extends Application
 {
     private Stage          stage;

@@ -2,5 +2,6 @@ package abstraction.immutable.tspi;
 
 public enum TspiType
 {
-    STATIC
+    STATIC,
+    CIRCLE;
 }

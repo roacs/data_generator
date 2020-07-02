@@ -8,5 +8,5 @@ public interface SensorDataGenerator
     public String getDescription();
     public long getCount();
     
-    public ByteBuffer getNext();
+    public ByteBuffer generateAtTime(long millis);
 }

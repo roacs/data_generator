@@ -45,7 +45,7 @@ public class OutputTransmitter
         {
             if (generatorInformation.isEnabled())
             {
-                ByteBuffer rawSensorData = generatorInformation.getSensorGenerator().getNext();
+                ByteBuffer rawSensorData = generatorInformation.getSensorGenerator().generateAtTime(System.currentTimeMillis());
                 try
                 {
                     datagramChannel.send(wrapSensorData(outputChannel, rawSensorData), destinationAddress);
