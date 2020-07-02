@@ -1,8 +1,8 @@
 package abstraction;
 
-import abstraction.immutable.MissionNumber;
 import abstraction.immutable.OutputChannel;
 import abstraction.immutable.sensor.SensorDataGenerator;
+import external.MissionNumber;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

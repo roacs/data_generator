@@ -1,8 +1,8 @@
 package presentation.output;
 
-import abstraction.immutable.MissionNumber;
 import control.MissionNumberTextField;
 import controller.MainController;
+import external.MissionNumber;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;

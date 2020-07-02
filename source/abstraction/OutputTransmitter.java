@@ -11,8 +11,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import abstraction.immutable.MissionNumber;
 import abstraction.immutable.OutputChannel;
+import external.MissionNumber;
 
 public class OutputTransmitter
 {

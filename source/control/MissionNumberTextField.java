@@ -1,5 +1,6 @@
 package control;
 
+import external.MissionNumber;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 
@@ -28,5 +29,10 @@ public class MissionNumberTextField extends TextField
             
             return (missionNumber > 0 && missionNumber < 10000) ? c : null;
         }));
+    }
+    
+    public MissionNumber getValue()
+    {
+        return new MissionNumber(getText(), false);
     }
 }
