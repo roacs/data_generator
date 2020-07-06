@@ -1,25 +1,52 @@
 package abstraction.immutable.tspi;
 
+import java.util.Random;
+
 import external.Acceleration;
 import external.Position;
 import external.Velocity;
 
 public class CircleTspiGenerator implements TspiGenerator
 {
+    private final Random   noise;
     private final double   radiusMeters;
     private final double   elevationDegrees;
     private final double   azimuthPerSecond;
     private final Position origin;
+    private final double   standardDeviationRadius;
+    private final double   standardDeviationAzimuth;
+    private final double   standardDeviationElevation;
+    private final boolean  noiseAdded;
 
     private double         currentAzimuth;
     private long           currentTime = 0;
 
     public CircleTspiGenerator(double radiusMeters, double elevationDegrees, double azimuthPerSecond, Position origin)
     {
+        this.noise = new Random(System.currentTimeMillis());
         this.radiusMeters = radiusMeters;
         this.elevationDegrees = elevationDegrees;
         this.azimuthPerSecond = azimuthPerSecond;
         this.origin = origin;
+        
+        this.standardDeviationRadius = 0;
+        this.standardDeviationAzimuth = 0;
+        this.standardDeviationElevation = 0;
+        this.noiseAdded = false;
+    }
+    
+    public CircleTspiGenerator(double radiusMeters, double elevationDegrees, double azimuthPerSecond, Position origin, double standardDeviationRadius, double standardDeviationAzimuth, double standardDeviationElevation)
+    {
+        this.noise = new Random(System.currentTimeMillis());
+        this.radiusMeters = radiusMeters;
+        this.elevationDegrees = elevationDegrees;
+        this.azimuthPerSecond = azimuthPerSecond;
+        this.origin = origin;
+        
+        this.standardDeviationRadius = standardDeviationRadius;
+        this.standardDeviationAzimuth = standardDeviationAzimuth;
+        this.standardDeviationElevation = standardDeviationElevation;
+        this.noiseAdded = true;
     }
 
     @Override
@@ -50,7 +77,12 @@ public class CircleTspiGenerator implements TspiGenerator
     @Override
     public Position getPosition()
     {
-        return Position.createWithSpherical(currentAzimuth, elevationDegrees, radiusMeters, origin);
+        double azimuth = noiseAdded ? currentAzimuth + (noise.nextGaussian() * standardDeviationAzimuth) : currentAzimuth;
+        double elevation = noiseAdded ? elevationDegrees + (noise.nextGaussian() * standardDeviationElevation) : elevationDegrees;
+        double range = noiseAdded ? radiusMeters + (noise.nextGaussian() * standardDeviationRadius) : radiusMeters;
+        
+        System.out.println(azimuth + ", " + elevation + ", " + range);
+        return Position.createWithSpherical(azimuth, elevation, range, origin);
     }
 
     @Override
